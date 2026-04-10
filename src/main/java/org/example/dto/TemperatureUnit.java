@@ -4,8 +4,6 @@
 
 package org.example.dto;
 
-import org.example.dto.IMeasurableUnit;
-
 public enum TemperatureUnit implements IMeasurableUnit {
     CELSIUS,
     FAHRENHEIT,

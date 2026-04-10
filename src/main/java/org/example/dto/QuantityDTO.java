@@ -7,35 +7,30 @@ package org.example.dto;
 public class QuantityDTO {
 
     private double value;
-    private String unit;
-    private String measurementType;
-
-    public QuantityDTO(double value, IMeasurableUnit unit) {
-        this.value = value;
-        this.unit = unit.getUnitName();
-        this.measurementType = unit.getMeasurementType();
-    }
-
-    public QuantityDTO(double value, String unit, String measurementType) {
-        this.value = value;
-        this.unit = unit;
-        this.measurementType = measurementType;
-    }
+    private String fromUnit;
+    private String toUnit;
 
     public double getValue() {
         return value;
     }
 
-    public String getUnit() {
-        return unit;
+    public String getFromUnit() {
+        return fromUnit;
     }
 
-    public String getMeasurementType() {
-        return measurementType;
+    public String getToUnit() {
+        return toUnit;
     }
 
-    @Override
-    public String toString() {
-        return value+" "+unit;
+    public void setValue(double value) {
+        this.value = value;
+    }
+
+    public void setFromUnit(String fromUnit) {
+        this.fromUnit = fromUnit;
+    }
+
+    public void setToUnit(String toUnit) {
+        this.toUnit = toUnit;
     }
 }
