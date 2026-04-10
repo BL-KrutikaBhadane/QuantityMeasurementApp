@@ -1,14 +1,12 @@
 package org.example;
 
+import java.util.logging.Logger;
+
 public class QuantityMeasurementApp {
+    private static final Logger logger = Logger.getLogger(QuantityMeasurementApp.class.getName());
+
     public static void main(String[] args) {
+        logger.info("Quantity Measurement App Started.....................");
 
-        Feet feet1 = new Feet(1.0);
-        Feet feet2 = new Feet(1.0);
-
-        boolean result = feet1.equals(feet2);
-
-        System.out.println("Input: 1.0 ft and 1.0 ft");
-        System.out.println("Output: Equal (" + result + ")");
     }
 }
