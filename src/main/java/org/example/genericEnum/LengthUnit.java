@@ -19,10 +19,10 @@ public enum LengthUnit implements IMeasurable {
     }
 
     public double convertToBaseUnit(double value){
-        return Math.round(value*conversionFactor *1000.0)/1000.0;
+        return value*conversionFactor;
     }
 
     public double convertFromBaseUnit(double baseValue) {
-        return Math.round(baseValue/conversionFactor *1000.0)/1000.0;
+        return baseValue/conversionFactor;
     }
 }

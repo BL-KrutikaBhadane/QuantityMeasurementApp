@@ -2,26 +2,20 @@ package org.example;
 
 import org.example.genericEnum.LengthUnit;
 import org.example.genericEnum.WeightUnit;
+import org.example.genericEnum.VolumeUnit;
 
 public class QuantityMeasurementApp {
     public static <U extends IMeasurable> boolean demonstrateEquality(Quantity<U> quantity1, Quantity<U> quantity2){
         return quantity1.equals(quantity2);
     }
 
-    public static <U extends IMeasurable> boolean demonstrateComparison(
-            double value1, U unit1,
-            double value2, U unit2
-    ){
+    public static <U extends IMeasurable> boolean demonstrateComparison(double value1, U unit1, double value2, U unit2){
         Quantity<U> quantity1 = new Quantity<>(value1, unit1);
         Quantity<U> quantity2 = new Quantity<>(value2, unit2);
         return quantity1.equals(quantity2);
     }
 
-    public static <U extends IMeasurable> Quantity<U> demonstrateConversion(
-            double value,
-            U fromUnit,
-            U toTargetUnit
-    ){
+    public static <U extends IMeasurable> Quantity<U> demonstrateConversion(double value, U fromUnit, U toTargetUnit){
         Quantity<U> quantity = new Quantity<>(value, fromUnit);
         return quantity.convertTo(toTargetUnit);
     }
@@ -36,6 +30,18 @@ public class QuantityMeasurementApp {
 
     public static <U extends IMeasurable> Quantity<U> demonstrateAddition(Quantity<U> quantity1, Quantity<U> quantity2, U targetUnit){
         return quantity1.add(quantity2, targetUnit);
+    }
+
+    public static <U extends IMeasurable> Quantity<U> demonstrateSubtraction(Quantity<U> quantity1, Quantity<U> quantity2){
+        return quantity1.subtract(quantity2);
+    }
+
+    public static <U extends IMeasurable> Quantity<U> demonstrateSubtraction(Quantity<U> quantity1, Quantity<U> quantity2, U targetUnit){
+        return quantity1.subtract(quantity2, targetUnit);
+    }
+
+    public static <U extends IMeasurable> double demonstrateDivision(Quantity<U> quantity1, Quantity<U> quantity2){
+        return quantity1.divide(quantity2);
     }
 
     public static void main(String[] args) {
@@ -110,6 +116,22 @@ public class QuantityMeasurementApp {
         System.out.println("Addition (1 L + 1 GALLON in L): " +
                 demonstrateAddition(v2, v3, VolumeUnit.LITRE));
 
+
+        System.out.println("\n=== SUBTRACTION TESTS ===");
+        System.out.println("1 FEET - 6 INCHES = " +
+                demonstrateSubtraction(q1, new Quantity<>(6.0, LengthUnit.INCHES)));
+
+        System.out.println("1 L - 500 ML = " +
+                demonstrateSubtraction(v2, new Quantity<>(500.0, VolumeUnit.MILLILITRE), VolumeUnit.GALLON));
+
+
+        System.out.println("\n=== DIVISION TESTS ===");
+        System.out.println("10 KG / 5 KG = " +
+                demonstrateDivision(new Quantity<>(10.0, WeightUnit.KILOGRAM),
+                        new Quantity<>(5.0, WeightUnit.KILOGRAM)));
+
+        System.out.println("1 L / 500 ML = " +
+                demonstrateDivision(v2, new Quantity<>(500.0, VolumeUnit.MILLILITRE)));
 
         // ---------- TYPE SAFETY ----------
         System.out.println("\n=== TYPE SAFETY DEMO ===");
