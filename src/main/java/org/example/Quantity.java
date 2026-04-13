@@ -1,12 +1,17 @@
 package org.example;
 
+import java.util.function.DoubleBinaryOperator;
+
 public class Quantity<U extends IMeasurable>{
     private double value;
     private U unit;
 
     public Quantity(double value, U unit){
-        if(Double.isNaN(value) || Double.isInfinite(value)) throw new IllegalArgumentException("Invalid numeric value");
-        if(unit == null) throw new IllegalArgumentException("This exception is thrown because Unit is provided as null");
+        if(Double.isNaN(value) || Double.isInfinite(value))
+            throw new IllegalArgumentException("Invalid numeric value");
+        if(unit == null)
+            throw new IllegalArgumentException("This exception is thrown because Unit is provided as null");
+
         this.value = value;
         this.unit = unit;
     }
@@ -18,6 +23,124 @@ public class Quantity<U extends IMeasurable>{
     public U getUnit() {
         return unit;
     }
+
+    /* =========================================
+       UC13 STEP 1 : Central Arithmetic Enum
+       ========================================= */
+
+    public enum ArithmeticOperation {
+        ADD((a, b) -> a + b),
+        SUBTRACT((a, b) -> a - b),
+        DIVIDE((a, b) -> {
+            if (b == 0.0) throw new ArithmeticException("Division by zero");
+            return a / b;
+        });
+
+        private final DoubleBinaryOperator operation;
+
+        ArithmeticOperation(DoubleBinaryOperator operation) {
+            this.operation = operation;
+        }
+
+        public double compute(double a, double b) {
+            return operation.applyAsDouble(a, b);
+        }
+    }
+
+    /* =========================================
+       UC13 STEP 2 : Central Validation
+       ========================================= */
+
+    private void validateArithmeticOperands(
+            Quantity<U> other,
+            U targetUnit,
+            boolean targetUnitRequired
+    ) {
+        if(other == null)
+            throw new IllegalArgumentException("Quantity cannot be null");
+
+        if (!this.unit.getClass().equals(other.unit.getClass()))
+            throw new IllegalArgumentException("Cross-category operation not allowed");
+
+        if (!Double.isFinite(this.value) || !Double.isFinite(other.value))
+            throw new IllegalArgumentException("Invalid numeric value");
+
+        if (targetUnitRequired && targetUnit == null)
+            throw new IllegalArgumentException("Please, Enter a valid targetUnit");
+
+        if (targetUnitRequired && !this.unit.getClass().equals(targetUnit.getClass()))
+            throw new IllegalArgumentException("Target unit category mismatch");
+    }
+
+    /* =========================================
+       UC13 STEP 3 : Central Arithmetic Engine
+       ========================================= */
+
+    private double performBaseArithmetic(
+            Quantity<U> other,
+            ArithmeticOperation operation,
+            U targetUnit,
+            boolean targetUnitRequired
+    ) {
+
+        validateArithmeticOperands(other, targetUnit, targetUnitRequired);
+
+        double base1 = this.unit.convertToBaseUnit(this.value);
+        double base2 = other.unit.convertToBaseUnit(other.value);
+
+        return operation.compute(base1, base2);
+    }
+
+    /* =========================================
+       Existing Methods (Now DRY + Centralized)
+       ========================================= */
+
+    public Quantity<U> convertTo(U targetUnit){
+        if(targetUnit == null) throw new IllegalArgumentException(" Target unit cannot be null");
+
+        double valueOfBaseUnit = this.unit.convertToBaseUnit(this.value);
+        double convertedValue = targetUnit.convertFromBaseUnit(valueOfBaseUnit);
+        return new Quantity<>(round(convertedValue), targetUnit);
+    }
+
+    /* ---------------- ADD ---------------- */
+
+    public Quantity<U> add(Quantity<U> secondQuantity){
+        double base = performBaseArithmetic(secondQuantity, ArithmeticOperation.ADD, null, false);
+        double resultValue = this.unit.convertFromBaseUnit(base);
+        return new Quantity<>(round(resultValue), unit);
+    }
+
+    public Quantity<U> add(Quantity<U> secondQuantity, U targetUnit){
+        double base = performBaseArithmetic(secondQuantity, ArithmeticOperation.ADD, targetUnit, true);
+        double resultValue = targetUnit.convertFromBaseUnit(base);
+        return new Quantity<>(round(resultValue), targetUnit);
+    }
+
+    /* ---------------- SUBTRACT ---------------- */
+
+    public Quantity<U> subtract(Quantity<U> secondQuantity){
+        double base = performBaseArithmetic(secondQuantity, ArithmeticOperation.SUBTRACT, null, false);
+        double resultValue = this.unit.convertFromBaseUnit(base);
+        return new Quantity<>(round(resultValue), this.unit);
+    }
+
+    public Quantity<U> subtract(Quantity<U> secondQuantity, U targetUnit){
+        double base = performBaseArithmetic(secondQuantity, ArithmeticOperation.SUBTRACT, targetUnit, true);
+        double resultValue = targetUnit.convertFromBaseUnit(base);
+        return new Quantity<>(round(resultValue), targetUnit);
+    }
+
+    /* ---------------- DIVIDE ---------------- */
+
+    public double divide(Quantity<U> secondQuantity){
+        double base = performBaseArithmetic(secondQuantity, ArithmeticOperation.DIVIDE, null, false);
+        return round(base);
+    }
+
+    /* =========================================
+       Existing Equality Logic (UNCHANGED)
+       ========================================= */
 
     @Override
     public boolean equals(Object obj){
@@ -49,76 +172,5 @@ public class Quantity<U extends IMeasurable>{
 
     private double round(double v){
         return Math.round(v * 1000.0) / 1000.0;
-    }
-
-    public Quantity<U> convertTo(U targetUnit){
-        if(targetUnit == null) throw new IllegalArgumentException(" Target unit cannot be null");
-
-        double valueOfBaseUnit = this.unit.convertToBaseUnit(this.value);
-        double convertedValue = targetUnit.convertFromBaseUnit(valueOfBaseUnit);
-        return new Quantity<>(round(convertedValue), targetUnit);
-    }
-
-    public Quantity<U> add(Quantity<U> secondQuantity){
-        if(secondQuantity == null) throw new IllegalArgumentException("Quantity to add cannot be null cannot be null");
-        if (!this.unit.getClass().equals(secondQuantity.unit.getClass()))
-            throw new IllegalArgumentException("Cross-category operation not allowed");
-
-        double firstValue = this.unit.convertToBaseUnit(this.value);
-        double secondValue = secondQuantity.unit.convertToBaseUnit(secondQuantity.value);
-        double sumValue = firstValue + secondValue;
-        double resultValue = this.unit.convertFromBaseUnit(sumValue);
-        return new Quantity<>(round(resultValue), unit);
-    }
-
-    public Quantity<U> add(Quantity<U> secondQuantity, U targetUnit){
-        if(secondQuantity == null) throw new IllegalArgumentException("Quantity to add cannot be null");
-        if(targetUnit == null) throw new IllegalArgumentException("Please, Enter a valid targetUnit");
-        if (!this.unit.getClass().equals(secondQuantity.unit.getClass()))
-            throw new IllegalArgumentException("Cross-category operation not allowed");
-
-        double base1 = this.unit.convertToBaseUnit(this.value);
-        double base2 = secondQuantity.unit.convertToBaseUnit(secondQuantity.value);
-        double baseValueInInches = base1 + base2;
-        double resultValue = targetUnit.convertFromBaseUnit(baseValueInInches);
-        return new Quantity<>(round(resultValue), targetUnit);
-    }
-
-    public Quantity<U> subtract(Quantity<U> secondQuantity){
-        if(secondQuantity == null) throw new IllegalArgumentException("Quantity to subtract cannot be null cannot be null");
-        if (!this.unit.getClass().equals(secondQuantity.unit.getClass()))
-            throw new IllegalArgumentException("Cross-category operation not allowed");
-
-        double firstValue = this.unit.convertToBaseUnit(this.value);
-        double secondValue = secondQuantity.unit.convertToBaseUnit(secondQuantity.value);
-        double baseResult = firstValue - secondValue;
-        double resultValue = this.unit.convertFromBaseUnit(baseResult);
-        return new Quantity<>(round(resultValue), this.unit);
-    }
-
-    public Quantity<U> subtract(Quantity<U> secondQuantity, U targetUnit){
-        if(secondQuantity == null) throw new IllegalArgumentException("Quantity to subtract cannot be null");
-        if(targetUnit == null) throw new IllegalArgumentException("Please, Enter a valid targetUnit");
-        if (!this.unit.getClass().equals(secondQuantity.unit.getClass()))
-            throw new IllegalArgumentException("Cross-category operation not allowed");
-
-        double firstValue = this.unit.convertToBaseUnit(this.value);
-        double secondValue = secondQuantity.unit.convertToBaseUnit(secondQuantity.value);
-        double baseValueInInches = firstValue - secondValue;
-        double resultValue = targetUnit.convertFromBaseUnit(baseValueInInches);
-        return new Quantity<>(round(resultValue), targetUnit);
-    }
-
-    public double divide(Quantity<U> secondQuantity){
-        if(secondQuantity == null) throw new IllegalArgumentException("Quantity cannot be null");
-        if (!this.unit.getClass().equals(secondQuantity.unit.getClass()))
-            throw new IllegalArgumentException("Cross-category operation not allowed");
-
-        double firstValue = this.unit.convertToBaseUnit(this.value);
-        double secondValue = secondQuantity.unit.convertToBaseUnit(secondQuantity.value);
-
-        if(secondValue == 0) throw new ArithmeticException("Division by zero");
-
-        return round(firstValue / secondValue);
     }
 }
