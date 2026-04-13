@@ -2,15 +2,14 @@ package org.example.genericEnum;
 
 import org.example.IMeasurable;
 
-public enum LengthUnit implements IMeasurable {
-    FEET(12.0),
-    INCHES(1.0),
-    YARDS(36.0),
-    CENTIMETERS(0.393701);
+public enum VolumeUnit implements IMeasurable {
+    MILLILITRE(1.0),
+    LITRE(1000.0),
+    GALLON(3785.412);
 
     private final double conversionFactor;
 
-    LengthUnit(double conversionFactor){
+    VolumeUnit(double conversionFactor) {
         this.conversionFactor = conversionFactor;
     }
 
@@ -19,10 +18,10 @@ public enum LengthUnit implements IMeasurable {
     }
 
     public double convertToBaseUnit(double value){
-        return Math.round(value*conversionFactor *1000.0)/1000.0;
+        return Math.round(value * this.conversionFactor * 1000.0) / 1000.0;
     }
 
     public double convertFromBaseUnit(double baseValue) {
-        return Math.round(baseValue/conversionFactor *1000.0)/1000.0;
+        return Math.round(baseValue / this.conversionFactor * 1000.0) / 1000.0;
     }
 }

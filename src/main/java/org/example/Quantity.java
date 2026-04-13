@@ -11,7 +11,6 @@ public class Quantity<U extends IMeasurable>{
         this.unit = unit;
     }
 
-
     public double getValue() {
         return value;
     }
@@ -37,6 +36,7 @@ public class Quantity<U extends IMeasurable>{
                 thatQuantity.unit.convertToBaseUnit(thatQuantity.value)
         ) == 0;
     }
+
     @Override
     public int hashCode(){
         return Double.hashCode(this.unit.convertToBaseUnit(this.value));

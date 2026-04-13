@@ -46,22 +46,18 @@ public class QuantityMeasurementApp {
         Quantity<LengthUnit> q2 = new Quantity<>(12.0, LengthUnit.INCHES);
         Quantity<LengthUnit> q3 = new Quantity<>(1.0, LengthUnit.YARDS);
 
-        // Equality
         System.out.println("Equality (1 FEET == 12 INCHES): " +
                 demonstrateEquality(q1, q2));
 
-        // Comparison using values + units
         System.out.println("Comparison (1 FEET , 12 INCHES): " +
                 demonstrateComparison(1.0, LengthUnit.FEET, 12.0, LengthUnit.INCHES));
 
-        // Conversion
         System.out.println("Conversion (1 FEET -> INCHES): " +
                 demonstrateConversion(1.0, LengthUnit.FEET, LengthUnit.INCHES));
 
         System.out.println("Conversion (q2 -> FEET): " +
                 demonstrateConversion(q2, LengthUnit.FEET));
 
-        // Addition
         System.out.println("Addition (1 FEET + 12 INCHES): " +
                 demonstrateAddition(q1, q2));
 
@@ -71,26 +67,51 @@ public class QuantityMeasurementApp {
         System.out.println("Addition (1 FEET + 1 YARD in FEET): " +
                 demonstrateAddition(q1, q3, LengthUnit.FEET));
 
+
         // ---------- WEIGHT TESTS ----------
         Quantity<WeightUnit> w1 = new Quantity<>(1.0, WeightUnit.KILOGRAM);
         Quantity<WeightUnit> w2 = new Quantity<>(1000.0, WeightUnit.GRAM);
 
-        // Equality
         System.out.println("\nEquality (1 KG == 1000 GRAM): " +
                 demonstrateEquality(w1, w2));
 
-        // Comparison
         System.out.println("Comparison (1 KG , 1000 GRAM): " +
                 demonstrateComparison(1.0, WeightUnit.KILOGRAM, 1000.0, WeightUnit.GRAM));
 
-        // Conversion
         System.out.println("Conversion (1 KG -> GRAM): " +
                 demonstrateConversion(1.0, WeightUnit.KILOGRAM, WeightUnit.GRAM));
 
-        // Addition
         System.out.println("Addition (1 KG + 1000 GRAM in KG): " +
                 demonstrateAddition(w1, w2, WeightUnit.KILOGRAM));
 
+
+        // ---------- VolumeEnumEnum TESTS ----------
+        Quantity<VolumeUnit> v1 = new Quantity<>(1000.0, VolumeUnit.MILLILITRE);
+        Quantity<VolumeUnit> v2 = new Quantity<>(1.0, VolumeUnit.LITRE);
+        Quantity<VolumeUnit> v3 = new Quantity<>(1.0, VolumeUnit.GALLON);
+
+        System.out.println("\n=== VolumeEnumEnum TESTS ===");
+
+        System.out.println("Equality (1000 ML == 1 L): " +
+                demonstrateEquality(v1, v2));
+
+        System.out.println("Comparison (1000 ML , 1 L): " +
+                demonstrateComparison(1000.0, VolumeUnit.MILLILITRE, 1.0, VolumeUnit.LITRE));
+
+        System.out.println("Conversion (1 L -> ML): " +
+                demonstrateConversion(1.0, VolumeUnit.LITRE, VolumeUnit.MILLILITRE));
+
+        System.out.println("Conversion (1000 ML -> L): " +
+                demonstrateConversion(v1, VolumeUnit.LITRE));
+
+        System.out.println("Addition (1000 ML + 1 L in ML): " +
+                demonstrateAddition(v1, v2, VolumeUnit.MILLILITRE));
+
+        System.out.println("Addition (1 L + 1 GALLON in L): " +
+                demonstrateAddition(v2, v3, VolumeUnit.LITRE));
+
+
+        // ---------- TYPE SAFETY ----------
         System.out.println("\n=== TYPE SAFETY DEMO ===");
 
         System.out.println("Cross-category comparison blocked at compile-time ✅");
