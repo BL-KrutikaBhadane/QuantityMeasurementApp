@@ -44,7 +44,7 @@ public class QuantityMeasurementApp {
 
         @Override
         public int hashCode(){
-            return Double.hashCode(value);    
+            return Double.hashCode(value);
         }
     }
 
