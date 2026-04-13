@@ -84,6 +84,7 @@ public class Quantity<U extends IMeasurable>{
     ) {
 
         validateArithmeticOperands(other, targetUnit, targetUnitRequired);
+        this.unit.validateOperationSupport(operation.name());
 
         double base1 = this.unit.convertToBaseUnit(this.value);
         double base2 = other.unit.convertToBaseUnit(other.value);

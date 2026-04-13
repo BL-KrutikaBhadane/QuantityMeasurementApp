@@ -1,6 +1,7 @@
 package org.example;
 
 import org.example.genericEnum.LengthUnit;
+import org.example.genericEnum.TemperatureUnit;
 import org.example.genericEnum.WeightUnit;
 import org.example.genericEnum.VolumeUnit;
 
@@ -47,7 +48,6 @@ public class QuantityMeasurementApp {
     public static void main(String[] args) {
         System.out.println("=== GENERIC METHOD TESTING ===\n");
 
-        // ---------- LENGTH TESTS ----------
         Quantity<LengthUnit> q1 = new Quantity<>(1.0, LengthUnit.FEET);
         Quantity<LengthUnit> q2 = new Quantity<>(12.0, LengthUnit.INCHES);
         Quantity<LengthUnit> q3 = new Quantity<>(1.0, LengthUnit.YARDS);
@@ -73,8 +73,6 @@ public class QuantityMeasurementApp {
         System.out.println("Addition (1 FEET + 1 YARD in FEET): " +
                 demonstrateAddition(q1, q3, LengthUnit.FEET));
 
-
-        // ---------- WEIGHT TESTS ----------
         Quantity<WeightUnit> w1 = new Quantity<>(1.0, WeightUnit.KILOGRAM);
         Quantity<WeightUnit> w2 = new Quantity<>(1000.0, WeightUnit.GRAM);
 
@@ -90,13 +88,9 @@ public class QuantityMeasurementApp {
         System.out.println("Addition (1 KG + 1000 GRAM in KG): " +
                 demonstrateAddition(w1, w2, WeightUnit.KILOGRAM));
 
-
-        // ---------- VolumeEnumEnum TESTS ----------
         Quantity<VolumeUnit> v1 = new Quantity<>(1000.0, VolumeUnit.MILLILITRE);
         Quantity<VolumeUnit> v2 = new Quantity<>(1.0, VolumeUnit.LITRE);
         Quantity<VolumeUnit> v3 = new Quantity<>(1.0, VolumeUnit.GALLON);
-
-        System.out.println("\n=== VolumeEnumEnum TESTS ===");
 
         System.out.println("Equality (1000 ML == 1 L): " +
                 demonstrateEquality(v1, v2));
@@ -116,16 +110,12 @@ public class QuantityMeasurementApp {
         System.out.println("Addition (1 L + 1 GALLON in L): " +
                 demonstrateAddition(v2, v3, VolumeUnit.LITRE));
 
-
-        System.out.println("\n=== SUBTRACTION TESTS ===");
         System.out.println("1 FEET - 6 INCHES = " +
                 demonstrateSubtraction(q1, new Quantity<>(6.0, LengthUnit.INCHES)));
 
         System.out.println("1 L - 500 ML = " +
                 demonstrateSubtraction(v2, new Quantity<>(500.0, VolumeUnit.MILLILITRE), VolumeUnit.GALLON));
 
-
-        System.out.println("\n=== DIVISION TESTS ===");
         System.out.println("10 KG / 5 KG = " +
                 demonstrateDivision(new Quantity<>(10.0, WeightUnit.KILOGRAM),
                         new Quantity<>(5.0, WeightUnit.KILOGRAM)));
@@ -133,9 +123,22 @@ public class QuantityMeasurementApp {
         System.out.println("1 L / 500 ML = " +
                 demonstrateDivision(v2, new Quantity<>(500.0, VolumeUnit.MILLILITRE)));
 
-        // ---------- TYPE SAFETY ----------
-        System.out.println("\n=== TYPE SAFETY DEMO ===");
+        Quantity<TemperatureUnit> t1 =
+                new Quantity<>(0.0, TemperatureUnit.CELSIUS);
 
-        System.out.println("Cross-category comparison blocked at compile-time ✅");
+        Quantity<TemperatureUnit> t2 =
+                new Quantity<>(32.0, TemperatureUnit.FAHRENHEIT);
+
+        System.out.println("Temperature Equality: " +
+                demonstrateEquality(t1, t2));
+
+        System.out.println("Temperature Conversion: " +
+                demonstrateConversion(t1, TemperatureUnit.FAHRENHEIT));
+
+        try {
+            t1.add(t2);
+        } catch (Exception e) {
+            System.out.println("Expected Error: " + e.getMessage());
+        }
     }
 }
