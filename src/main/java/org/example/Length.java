@@ -4,20 +4,40 @@ public class Length {
     private double value;
     private LengthUnit unit;
 
-    public Length(double value, LengthUnit unit) {
-        if (Double.isNaN(value))
-            throw new IllegalArgumentException("This exception is thrown because value is not valid(Numeric)");
-        if (unit == null)
-            throw new IllegalArgumentException("This exception is thrown because Unit is provided as null");
+    public Length(double value, LengthUnit unit){
+        if(Double.isNaN(value) || Double.isInfinite(value)) throw new IllegalArgumentException("Invalid numeric value");
+        if(unit == null) throw new IllegalArgumentException("This exception is thrown because Unit is provided as null");
         this.value = value;
         this.unit = unit;
     }
 
-    private double convertToBaseUnit() {
-        return Math.round(value * unit.getConversionFactor() * 100.0) / 100.0;
+    public double getValue() {
+        return value;
     }
 
-    public boolean compare(Length thatLength) {
+    public LengthUnit getUnit() {
+        return unit;
+    }
+
+    private double convertToBaseUnit(){
+        return Math.round(value*unit.getConversionFactor() *100.0)/100.0;
+    }
+
+
+    public Length convertTo(LengthUnit targetUnit){
+        if(targetUnit == null) throw new IllegalArgumentException(" Target unit cannot be null");
+
+        double valueOfBaseUnit = this.value * this.unit.getConversionFactor() ;
+        double convertedValue = Math.round(valueOfBaseUnit / targetUnit.getConversionFactor() *100.0)/100.0;
+        return new Length(convertedValue, targetUnit);
+    }
+
+    @Override
+    public String toString() {
+        return ""+value+" "+unit;
+    }
+
+    public boolean compare(Length thatLength){
         return Double.compare(
                 this.convertToBaseUnit(),
                 thatLength.convertToBaseUnit()
@@ -25,19 +45,19 @@ public class Length {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
-        Length length = (Length) obj;
+    public boolean equals(Object obj){
+        if(this == obj) return true;
+        if(obj == null || getClass() != obj.getClass()) return false;
+        Length length = (Length)obj;
         return compare(length);
     }
 
     @Override
-    public int hashCode() {
+    public int hashCode(){
         return Double.hashCode(convertToBaseUnit());
     }
 
-    public enum LengthUnit {
+    public enum LengthUnit{
         FEET(12.0),
         INCHES(1.0),
         YARDS(36.0),
@@ -45,11 +65,10 @@ public class Length {
 
         private final double conversionFactor;
 
-        LengthUnit(double conversionFactor) {
+        LengthUnit(double conversionFactor){
             this.conversionFactor = conversionFactor;
         }
-
-        public double getConversionFactor() {
+        public double getConversionFactor(){
             return conversionFactor;
         }
     }

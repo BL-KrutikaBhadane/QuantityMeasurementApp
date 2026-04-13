@@ -3,19 +3,42 @@ package org.example;
 import org.example.Length.LengthUnit;
 public class QuantityMeasurementApp {
 
-    public static void demonstrateLengthComparison(
+    public static boolean demonstrateLengthEquality(Length length1, Length length2){
+        return length1.equals(length2);
+    }
+
+    public static boolean demonstrateLengthComparison(
             double value1, LengthUnit unit1,
             double value2, LengthUnit unit2
     ){
         Length l1 = new Length(value1, unit1);
         Length l2 = new Length(value2, unit2);
-        System.out.println(l1.equals(l2));
+        return l1.equals(l2);
+    }
+
+    public static Length demonstrateLengthConversion(
+            double value,
+            LengthUnit fromUnit,
+            LengthUnit toTargetUnit
+    ){
+        Length l = new Length(value, fromUnit);
+        return l.convertTo(toTargetUnit);
+    }
+
+    public static Length demonstrateLengthConversion(Length length1, LengthUnit toTargetUnit){
+        return length1.convertTo(toTargetUnit);
     }
 
     public static void main(String[] args) {
+        Length length1 = new Length(1.0, LengthUnit.FEET);
+        Length length2 = new Length(12.0, LengthUnit.INCHES);
+
+        demonstrateLengthEquality(length1, length2);
         demonstrateLengthComparison(
                 1.0, LengthUnit.FEET,
                 12.0,LengthUnit.INCHES);
-    }
 
+        demonstrateLengthConversion(5.0, LengthUnit.YARDS, LengthUnit.INCHES);
+        demonstrateLengthConversion(length1, LengthUnit.INCHES);
+    }
 }

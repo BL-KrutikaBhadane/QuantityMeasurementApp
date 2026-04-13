@@ -197,4 +197,75 @@ class QuantityMeasurementAppTest {
             new Length(1.0, null);
         });
     }
+
+    @Test
+    public void testConversion_FeetToInches(){
+        Length l = new Length(1.0, LengthUnit.FEET);
+        assertEquals(12.0, l.convertTo(LengthUnit.INCHES).getValue());
+    }
+
+    @Test
+    public void testConversion_InchesToFeet(){
+        Length l = new Length(24.0, LengthUnit.INCHES);
+        assertEquals(2.0, l.convertTo(LengthUnit.FEET).getValue());
+    }
+
+    @Test
+    public void testConversion_YardsToInches(){
+        Length l = new Length(1.0, LengthUnit.YARDS);
+        assertEquals(36.0, l.convertTo(LengthUnit.INCHES).getValue());
+    }
+
+    @Test
+    public void testConversion_InchesToYards(){
+        Length l = new Length(72.0, LengthUnit.INCHES);
+        assertEquals(2.0, l.convertTo(LengthUnit.YARDS).getValue());
+    }
+
+    @Test
+    public void testConversion_CentimetersToInches(){
+        Length l = new Length(2.54, LengthUnit.CENTIMETERS);
+        assertEquals(1.0, l.convertTo(LengthUnit.INCHES).getValue());
+    }
+
+    @Test
+    public void testConversion_FeetToYard(){
+        Length l = new Length(6.0, LengthUnit.FEET);
+        assertEquals(2.0, l.convertTo(LengthUnit.YARDS).getValue());
+    }
+
+    @Test
+    public void testConversion_ZeroValue(){
+        Length l = new Length(0.0, LengthUnit.FEET);
+        assertEquals(0.0, l.convertTo(LengthUnit.INCHES).getValue());
+    }
+
+    @Test
+    public void testConversion_NegativeValue(){
+        Length l = new Length(-1.0, LengthUnit.FEET);
+        assertEquals(-12.0, l.convertTo(LengthUnit.INCHES).getValue());
+    }
+
+    @Test
+    public void testConversion_RoundTrip_PreservesValue(){
+        Length l = new Length(1.0, LengthUnit.FEET);
+        Length val = l.convertTo(LengthUnit.INCHES);
+        assertEquals(1.0, QuantityMeasurementApp.demonstrateLengthConversion(val.getValue(), LengthUnit.INCHES, LengthUnit.FEET).getValue());
+    }
+
+    @Test
+    public void testConversion_NaNOrInfinite_Throws(){
+        assertThrows(IllegalArgumentException.class, ()->
+                new Length(Double.NaN, LengthUnit.FEET));
+        assertThrows(IllegalArgumentException.class, ()->
+                new Length(Double.POSITIVE_INFINITY, LengthUnit.FEET));
+        assertThrows(IllegalArgumentException.class, ()->
+                new Length(Double.NEGATIVE_INFINITY, LengthUnit.FEET));
+    }
+
+    @Test
+    public void testConversion_PrecisionTolerance(){
+        Length l = new Length(1.0, LengthUnit.FEET);
+        assertNotEquals(30.479999, l.convertTo(LengthUnit.CENTIMETERS).getValue());
+    }
 }
