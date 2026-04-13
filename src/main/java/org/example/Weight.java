@@ -1,5 +1,7 @@
 package org.example;
 
+import org.example.genericEnum.WeightUnit;
+
 public class Weight {
     private double value;
     private WeightUnit unit;

@@ -1,5 +1,7 @@
 package org.example;
 
+import org.example.genericEnum.LengthUnit;
+
 public class Length {
     private double value;
     private LengthUnit unit;

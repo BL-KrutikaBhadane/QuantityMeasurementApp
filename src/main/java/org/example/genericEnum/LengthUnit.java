@@ -1,6 +1,8 @@
-package org.example;
+package org.example.genericEnum;
 
-public enum LengthUnit{
+import org.example.IMeasurable;
+
+public enum LengthUnit implements IMeasurable {
     FEET(12.0),
     INCHES(1.0),
     YARDS(36.0),
