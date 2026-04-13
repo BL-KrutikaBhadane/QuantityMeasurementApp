@@ -41,6 +41,24 @@ public class Length {
         return new Length(resultValue, this.unit);
     }
 
+    public Length add(Length secondlength, LengthUnit targetUnit){
+        if(targetUnit == null) throw new IllegalArgumentException("Please, Enter a valid targetUnit");
+        return addAndConvert(secondlength, targetUnit);
+    }
+
+    private Length addAndConvert(Length secondlength, LengthUnit targetUnit) {
+        double base1 = this.value * this.unit.getConversionFactor();
+        double base2 = secondlength.value * secondlength.unit.getConversionFactor();
+        double baseValueInInches = base1 + base2;
+
+        double resultValue = Math.round(convertFromBaseToTargetUnit(baseValueInInches, targetUnit) *1000.0)/1000.0;
+        return new Length(resultValue, targetUnit);
+    }
+
+    private double convertFromBaseToTargetUnit(double baseValueInInches, LengthUnit targetUnit) {
+        return baseValueInInches / targetUnit.getConversionFactor();
+    }
+
     @Override
     public String toString() {
         return ""+value+" "+unit;
