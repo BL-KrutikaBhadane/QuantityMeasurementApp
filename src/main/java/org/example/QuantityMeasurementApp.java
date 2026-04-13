@@ -1,5 +1,6 @@
 package org.example;
 
+import org.example.Length.LengthUnit;
 public class QuantityMeasurementApp {
 
     public static class Feet{
@@ -60,8 +61,22 @@ public class QuantityMeasurementApp {
         System.out.println("Inches value in1, in1 are equal: "+in1.equals(in2));
     }
 
+    public static void demostrateLengthEquality(){
+        Length l1 = new Length(1.0, LengthUnit.FEET);
+        Length l2 = new Length(12.0, LengthUnit.INCHES);
+        System.out.println(l1.equals(l2));
+    }
+
+    public static void demonstrateFeetInchesComparison(){
+        Length f = new Length(1.0, LengthUnit.FEET);
+        Length in = new Length(12.0, LengthUnit.INCHES);
+        System.out.println(f.equals(in));
+    }
+
     public static void main(String[] args) {
         demonstrateFeetEquality();
         demonstrateInchesEquality();
+        demonstrateFeetInchesComparison();
     }
+
 }
