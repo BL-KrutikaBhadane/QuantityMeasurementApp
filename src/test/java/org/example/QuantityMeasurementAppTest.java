@@ -268,4 +268,96 @@ class QuantityMeasurementAppTest {
         Length l = new Length(1.0, LengthUnit.FEET);
         assertNotEquals(30.479999, l.convertTo(LengthUnit.CENTIMETERS).getValue());
     }
+
+    @Test
+    public void testAddition_SameUnit_FeetPlusFeet(){
+        Length l1 = new Length(1.0, LengthUnit.FEET);
+        Length l2 = new Length(2.0, LengthUnit.FEET);
+        assertEquals(3.0, l1.add(l2).getValue());
+    }
+
+    @Test
+    public void testAddition_SameUnit_InchPlusInch(){
+        Length l1 = new Length(6.0, LengthUnit.INCHES);
+        Length l2 = new Length(6.0, LengthUnit.INCHES);
+        assertEquals(12.0, l1.add(l2).getValue());
+    }
+
+    @Test
+    public void testAddition_CrossUnit_FeetPlusInches(){
+        Length l1 = new Length(1.0, LengthUnit.FEET);
+        Length l2 = new Length(12.0, LengthUnit.INCHES);
+        assertEquals(2.0, l1.add(l2).getValue());
+    }
+
+    @Test
+    public void testAddition_CrossUnit_InchPlusFeet(){
+        Length l1 = new Length(12.0, LengthUnit.INCHES);
+        Length l2 = new Length(1.0, LengthUnit.FEET);
+        assertEquals(24.0, l1.add(l2).getValue());
+    }
+
+    @Test
+    public void testAddition_CrossUnit_YardPlusFeet(){
+        Length l1 = new Length(1.0, LengthUnit.YARDS);
+        Length l2 = new Length(3.0, LengthUnit.FEET);
+        assertEquals(2.0, l1.add(l2).getValue());
+    }
+
+    @Test
+    public void testAddition_CrossUnit_CentimeterPlusInch(){
+        Length l1 = new Length(2.54, LengthUnit.CENTIMETERS);
+        Length l2 = new Length(1.0, LengthUnit.INCHES);
+        assertEquals(5.08, l1.add(l2).getValue());
+    }
+
+    @Test
+    public void testAddition_Commutativity(){
+        Length l1 = new Length(1.0, LengthUnit.FEET);
+        Length l2 = new Length(12.0, LengthUnit.INCHES);
+
+        Length result1 = l1.add(l2);
+        Length result2 = l2.add(l1);
+
+        Length base1 = result1.convertTo(LengthUnit.INCHES);
+        Length base2 = result2.convertTo(LengthUnit.INCHES);
+
+        assertEquals(base1.getValue(), base2.getValue());
+    }
+
+    @Test
+    public void testAddition_WithZero() {
+        Length l1 = new Length(5.0, LengthUnit.FEET);
+        Length l2 = new Length(0.0, LengthUnit.INCHES);
+        assertEquals(5.0, l1.add(l2).getValue());
+    }
+
+    @Test
+    public void testAddition_NegativeValues(){
+        Length l1 = new Length(5.0, LengthUnit.FEET);
+        Length l2 = new Length(-2.0, LengthUnit.FEET);
+        assertEquals(3.0, l1.add(l2).getValue());
+    }
+
+    @Test
+    public void testAddition_NullSecondOperand(){
+        Length l1 = new Length(1.0, LengthUnit.FEET);
+        assertThrows(IllegalArgumentException.class, ()-> {
+            l1.add(null);
+        });
+    }
+
+    @Test
+    public void testAddition_LargeValues(){
+        Length l1 = new Length(1e6, LengthUnit.FEET);
+        Length l2 = new Length(1e6, LengthUnit.FEET);
+        assertEquals(2e6, l1.add(l2).getValue());
+    }
+
+    @Test
+    public void testAddition_SmallValues(){
+        Length l1 = new Length(0.001, LengthUnit.FEET);
+        Length l2 = new Length(0.002, LengthUnit.FEET);
+        assertEquals(0.003, l1.add(l2).getValue());
+    }
 }

@@ -29,16 +29,20 @@ public class QuantityMeasurementApp {
         return length1.convertTo(toTargetUnit);
     }
 
+    public static Length demonstrateLengthAddition(Length length1, Length length2){
+        return length1.add(length2);
+    }
+
     public static void main(String[] args) {
         Length length1 = new Length(1.0, LengthUnit.FEET);
         Length length2 = new Length(12.0, LengthUnit.INCHES);
 
-        demonstrateLengthEquality(length1, length2);
-        demonstrateLengthComparison(
+        System.out.println(length1+" is equals to "+length2+" = "+demonstrateLengthEquality(length1, length2));
+        System.out.println(demonstrateLengthComparison(
                 1.0, LengthUnit.FEET,
-                12.0,LengthUnit.INCHES);
-
-        demonstrateLengthConversion(5.0, LengthUnit.YARDS, LengthUnit.INCHES);
-        demonstrateLengthConversion(length1, LengthUnit.INCHES);
+                12.0,LengthUnit.INCHES));
+        System.out.println(demonstrateLengthConversion(5.0, LengthUnit.YARDS, LengthUnit.INCHES));
+        System.out.println(demonstrateLengthConversion(length1, LengthUnit.INCHES));
+        System.out.println(length1+" + "+length2+" = "+demonstrateLengthAddition(length1, length2));
     }
 }

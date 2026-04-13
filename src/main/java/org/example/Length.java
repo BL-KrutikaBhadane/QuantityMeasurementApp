@@ -20,16 +20,25 @@ public class Length {
     }
 
     private double convertToBaseUnit(){
-        return Math.round(value*unit.getConversionFactor() *100.0)/100.0;
+        return Math.round(value*unit.getConversionFactor() *1000.0)/1000.0;
     }
 
 
     public Length convertTo(LengthUnit targetUnit){
         if(targetUnit == null) throw new IllegalArgumentException(" Target unit cannot be null");
 
-        double valueOfBaseUnit = this.value * this.unit.getConversionFactor() ;
-        double convertedValue = Math.round(valueOfBaseUnit / targetUnit.getConversionFactor() *100.0)/100.0;
+        double valueOfBaseUnit = this.value * this.unit.getConversionFactor();
+        double convertedValue = Math.round(valueOfBaseUnit / targetUnit.getConversionFactor() *1000.0)/1000.0;
         return new Length(convertedValue, targetUnit);
+    }
+
+    public Length add(Length secondLength){
+        if(secondLength == null) throw new IllegalArgumentException("Length to add cannot be null cannot be null");
+        double firstValue = this.value * this.unit.getConversionFactor();
+        double secondValue = secondLength.value * secondLength.unit.getConversionFactor();
+        double sumValue = firstValue + secondValue;
+        double resultValue = Math.round(sumValue / this.unit.getConversionFactor() *1000.0)/1000.0;
+        return new Length(resultValue, this.unit);
     }
 
     @Override
