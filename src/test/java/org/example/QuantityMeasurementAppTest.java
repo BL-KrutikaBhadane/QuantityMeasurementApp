@@ -622,4 +622,110 @@ class QuantityMeasurementAppTest {
             }
         }
     }
+
+    @Test
+    public void testEquality_KilogramToKilogram_SameValue(){
+        assertTrue(new Weight(1.0, WeightUnit.KILOGRAM).equals(new Weight(1.0, WeightUnit.KILOGRAM)));
+    }
+
+    @Test
+    public void testEquality_KilogramToKilogram_DifferentValue(){
+        assertFalse(new Weight(1.0, WeightUnit.KILOGRAM).equals(new Weight(2.0, WeightUnit.KILOGRAM)));
+    }
+
+    @Test
+    public void testEquality_KilogramToGram_EquivalentValue(){
+        assertTrue(new Weight(1.0, WeightUnit.KILOGRAM).equals(new Weight(1000.0, WeightUnit.GRAM)));
+    }
+
+    @Test
+    public void testEquality_GramToKilogram_EquivalentValue(){
+        assertTrue(new Weight(1000.0, WeightUnit.GRAM).equals(new Weight(1.0, WeightUnit.KILOGRAM)));
+    }
+
+    @Test
+    public void testEquality_WeightVsLength_Incompatible(){
+        assertFalse(new Weight(1.0, WeightUnit.KILOGRAM).equals(new Length(1.0, LengthUnit.FEET)));
+    }
+
+    @Test
+    public void testEquality_TransitiveProperty(){
+        assertTrue(new Weight(1.0, WeightUnit.KILOGRAM).equals(new Weight(1000.0, WeightUnit.GRAM)));
+        assertTrue(new Weight(1000.0, WeightUnit.GRAM).equals(new Weight(1.0, WeightUnit.KILOGRAM)));
+        assertTrue(new Weight(1.0, WeightUnit.KILOGRAM).equals(new Weight(1.0, WeightUnit.KILOGRAM)));
+    }
+
+    @Test
+    public void testEquality_ZeroValue(){
+        assertTrue(new Weight(0.0, WeightUnit.KILOGRAM).equals(new Weight(0.0, WeightUnit.GRAM)));
+    }
+
+    @Test
+    public void testEquality_NegativeWeight(){
+        assertTrue(new Weight(-1.0, WeightUnit.KILOGRAM).equals(new Weight(-1000.0, WeightUnit.GRAM)));
+    }
+
+    @Test
+    public void testEquality_LargeWeightValue(){
+        assertTrue(new Weight(1000000.0, WeightUnit.GRAM).equals(new Weight(1000.0, WeightUnit.KILOGRAM)));
+    }
+
+    @Test
+    public void testEquality_SmallWeightValue(){
+        assertTrue(new Weight(0.001, WeightUnit.KILOGRAM).equals(new Weight(1.0, WeightUnit.GRAM)));
+    }
+
+    @Test
+    public void testConversion_PoundToKilogram(){
+        Weight weight = new Weight(2.20462, WeightUnit.POUND);
+        assertEquals(1.0, weight.convertTo(WeightUnit.KILOGRAM).getValue());
+    }
+
+    @Test
+    public void testConversion_KilogramToPound(){
+        Weight weight = new Weight(1.0, WeightUnit.KILOGRAM);
+        assertEquals(2.205, weight.convertTo(WeightUnit.POUND).getValue());
+    }
+
+    @Test
+    public void testConversion_SameUnit(){
+        Weight weight = new Weight(5.0, WeightUnit.KILOGRAM);
+        assertEquals(5.0, weight.convertTo(WeightUnit.KILOGRAM).getValue());
+    }
+
+    @Test
+    public void testConversion_RoundTrip(){
+        Weight weight = new Weight(1.5, WeightUnit.KILOGRAM);
+        Weight weight1 = weight.convertTo(WeightUnit.GRAM);
+        Weight weight2 = weight1.convertTo(WeightUnit.KILOGRAM);
+        assertEquals(1.5, weight2.getValue());
+    }
+
+    @Test
+    public void testAddition_SameUnit_KilogramPlusKilogram(){
+        Weight weight1 = new Weight(1.0, WeightUnit.KILOGRAM);
+        Weight weight2 = new Weight(2.0, WeightUnit.KILOGRAM);
+        assertEquals(3.0, weight1.add(weight2).getValue());
+    }
+
+    @Test
+    public void testAddition_CrossUnit_KilogramPlusGram(){
+        Weight weight1 = new Weight(1.0, WeightUnit.KILOGRAM);
+        Weight weight2 = new Weight(2000.0, WeightUnit.GRAM);
+        assertEquals(3.0, weight1.add(weight2).getValue());
+    }
+
+    @Test
+    public void testAddition_CrossUnit_PoundPlusKilogram(){
+        Weight weight1 = new Weight(2.20462, WeightUnit.POUND);
+        Weight weight2 = new Weight(1.0, WeightUnit.KILOGRAM);
+        assertEquals(4.409, weight1.add(weight2).getValue());
+    }
+
+    @Test
+    public void testAddition_ExplicitTargetUnit_Kilogram(){
+        Weight weight1 = new Weight(1.0, WeightUnit.KILOGRAM);
+        Weight weight2 = new Weight(2000.0, WeightUnit.GRAM);
+        assertEquals(3000.0, weight1.add(weight2, WeightUnit.GRAM).getValue());
+    }
 }

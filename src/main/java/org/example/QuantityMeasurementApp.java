@@ -33,8 +33,44 @@ public class QuantityMeasurementApp {
         return length1.add(length2);
     }
 
-    public static Length demonstrateLengthAddition(Length length1, Length length2, LengthUnit targetLength){
-        return length1.add(length2, targetLength);
+    public static Length demonstrateLengthAddition(Length length1, Length length2, LengthUnit targetUnit){
+        return length1.add(length2, targetUnit);
+    }
+
+
+
+    public static boolean demonstrateWeightEquality(Weight weight1, Weight weight2){
+        return weight1.equals(weight2);
+    }
+
+    public static boolean demonstrateWeightComparison(
+            double value1, WeightUnit unit1,
+            double value2, WeightUnit unit2
+    ){
+        Weight weight1 = new Weight(value1, unit1);
+        Weight weight2 = new Weight(value2, unit2);
+        return weight1.equals(weight2);
+    }
+
+    public static Weight demonstrateWeightConversion(
+            double value,
+            WeightUnit fromUnit,
+            WeightUnit toTargetUnit
+    ){
+        Weight weight = new Weight(value, fromUnit);
+        return weight.convertTo(toTargetUnit);
+    }
+
+    public static Weight demonstrateWeightConversion(Weight weight1, WeightUnit toTargetUnit){
+        return weight1.convertTo(toTargetUnit);
+    }
+
+    public static Weight demonstrateWeightAddition(Weight weight1, Weight weight2){
+        return weight1.add(weight2);
+    }
+
+    public static Weight demonstrateWeightAddition(Weight weight1, Weight weight2, WeightUnit targetUnit){
+        return weight1.add(weight2, targetUnit);
     }
 
     public static void main(String[] args) {
@@ -49,5 +85,19 @@ public class QuantityMeasurementApp {
         System.out.println(demonstrateLengthConversion(length1, LengthUnit.INCHES));
         System.out.println(length1+" + "+length2+" = "+demonstrateLengthAddition(length1, length2));
         System.out.println(length1+" + "+length2+" = "+demonstrateLengthAddition(length1, length2, LengthUnit.CENTIMETERS));
+
+
+
+        Weight weight1 = new Weight(1.0, WeightUnit.KILOGRAM);
+        Weight weight2 = new Weight(1000.0, WeightUnit.GRAM);
+
+        System.out.println(weight1+" is equals to "+ weight2 +" = "+demonstrateWeightEquality(weight1, weight2));
+        System.out.println(demonstrateWeightComparison(
+                1.0, WeightUnit.KILOGRAM,
+                1000.0,WeightUnit.GRAM));
+        System.out.println(demonstrateWeightConversion(5.0, WeightUnit.POUND, WeightUnit.KILOGRAM));
+        System.out.println(demonstrateWeightConversion(weight1, WeightUnit.GRAM));
+        System.out.println(weight1+" + "+ weight2 +" = "+demonstrateWeightAddition(weight1, weight2));
+        System.out.println(weight1+" + "+ weight2 +" = "+demonstrateWeightAddition(weight1, weight2, WeightUnit.MILLIGRAM));
     }
 }
